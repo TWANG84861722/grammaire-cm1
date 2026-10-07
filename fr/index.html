@@ -603,30 +603,30 @@ function renderMiss(){
   return h+'</div></div>';
 }
 function renderParents(){
-  const wk=['日','一','二','三','四','五','六'];let max=DAILY,bars='';
+  const wk=['D','L','M','M','J','V','S'];let max=DAILY,bars='';
   for(let i=-6;i<=0;i++)max=Math.max(max,S.days[dstr(i)]||0);
   for(let i=-6;i<=0;i++){const v=S.days[dstr(i)]||0,d=new Date();d.setDate(d.getDate()+i);
-    bars+=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;font-size:11px;color:var(--muted)"><span>${v||''}</span><i style="display:block;width:100%;max-width:28px;border-radius:6px 6px 2px 2px;min-height:3px;height:${Math.max(2,v/max*100)}%;background:${i===0?'var(--gold)':'var(--accent)'}"></i><span>${i===0?'今天':wk[d.getDay()]}</span></div>`}
+    bars+=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;font-size:11px;color:var(--muted)"><span>${v||''}</span><i style="display:block;width:100%;max-width:28px;border-radius:6px 6px 2px 2px;min-height:3px;height:${Math.max(2,v/max*100)}%;background:${i===0?'var(--gold)':'var(--accent)'}"></i><span>${i===0?'auj.':wk[d.getDay()]}</span></div>`}
   const skills=SKILLS.map((sk,si)=>{
     const us=UNITS.map((u,ui)=>[u,ui]).filter(([u])=>u.sk===si);
     const rows=us.map(([u,ui])=>{const [n,ok]=S.stat[ui]||[0,0],p=n?Math.round(ok/n*100):0;
-      return `<div class="skill"><div class="mrow"><b>${u.zh} <span style="font-weight:600;color:var(--muted);font-size:13px">${u.t}</span></b><span>${n?p+'% · '+n+' 次':'还没练'}</span></div>
+      return `<div class="skill"><div class="mrow"><b>${u.t}</b><span>${n?p+' % · '+n+' réponse'+(n>1?'s':''):'pas encore'}</span></div>
       <div class="bar"><i style="width:${p}%;background:${p>=80?'var(--ok)':p>=60?'var(--gold)':'var(--bad)'}"></i></div></div>`}).join('');
-    return `<div class="section-title" style="font-size:16px;margin-top:16px">${sk.zh}<span style="color:var(--muted);font-weight:600;font-size:13px"> · ${sk.fr}</span></div><div class="card" style="padding-block:4px">${rows}</div>`;
+    return `<div class="section-title" style="font-size:16px;margin-top:16px">${sk.fr}</div><div class="card" style="padding-block:4px">${rows}</div>`;
   }).join('');
   const missIds=Object.keys(S.miss).filter(id=>ITEMS[id]).sort((a,b)=>S.miss[b]-S.miss[a]).slice(0,8);
-  return `<div class="page"><h1>家长看这里</h1><p class="lead">对应 CM1 Repères 评估里的三项语法能力：判断词性、找主语和动词、主谓配合。</p>
-  <div class="facts"><div><b>${S.xp}</b><span>总积分</span></div><div><b>${streakNow()}</b><span>连续天数</span></div><div><b>${Object.keys(S.done).length}/${ORDER.length}</b><span>完成关卡</span></div></div>
-  <div class="card note">建议每天一课（约 10 分钟），每天达到 ${DAILY} 分。每一步开头有一张「Astuce」规则卡，可以和孩子一起读，用法语说出判断方法，比如「Qui est-ce qui + 动词 ?」。做错的题会自动进入「Mes erreurs」。下面的正确率按每次作答统计，包括错后重做的那几次。</div>
-  <div class="section-title">各项正确率</div>${skills}
-  <div class="section-title">最近 7 天积分</div><div class="card"><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:130px">${bars}</div></div>
-  <div class="section-title">最常错的题</div>
-  ${missIds.length?`<div class="card" style="padding-block:4px">${missIds.map(id=>{const it=ITEMS[id];return `<div class="skill"><div class="m-top"><span>${UNITS[it.ui].zh}</span><span>错 ${S.miss[id]} 次</span></div><div class="m-q" style="font-size:16px">${esc(plain(it.s))}</div><div class="m-a">${esc(answerText(it))}</div></div>`}).join('')}</div>`:`<div class="card empty">还没有错题。</div>`}
-  <div class="section-title">设置</div><div class="card">
-   <div class="row"><div><b>进度</b><p>进度保存在这台设备的浏览器里，不需要注册。换设备或清理浏览器数据后会从头开始。</p></div></div>
-   <div class="row"><div><b>音效</b><p>答对、答错时的提示音</p></div><button class="switch" id="soundSw" role="switch" aria-checked="${S.sound}" aria-label="音效"></button></div>
-   <div class="row"><div><b>解锁全部关卡</b><p>想直接练某一步时打开</p></div><button class="switch" id="unlockSw" role="switch" aria-checked="${S.unlockAll}" aria-label="解锁全部关卡"></button></div>
-   <div class="row" id="resetRow"><div><b>重置进度</b><p>清除积分、关卡、错题和统计</p></div><button class="btn ghost small" id="resetBtn">重置</button></div>
+  return `<div class="page"><h1>Espace parents</h1><p class="lead">Les trois compétences de grammaire évaluées par les tests Repères de CM1 : la nature des mots, le sujet et le verbe, l’accord.</p>
+  <div class="facts"><div><b>${S.xp}</b><span>points</span></div><div><b>${streakNow()}</b><span>jours de suite</span></div><div><b>${Object.keys(S.done).length}/${ORDER.length}</b><span>leçons finies</span></div></div>
+  <div class="card note">Conseil : une leçon par jour (environ 10 minutes), soit ${DAILY} points. Chaque étape commence par une carte « Astuce » : lisez-la avec votre enfant et faites-lui dire la méthode à voix haute, par exemple « Qui est-ce qui + verbe ? ». Les exercices ratés vont dans « Erreurs ». Les taux de réussite ci-dessous comptent chaque réponse, y compris les nouvelles tentatives après une erreur.</div>
+  <div class="section-title">Réussite par compétence</div>${skills}
+  <div class="section-title">Points des 7 derniers jours</div><div class="card"><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:130px">${bars}</div></div>
+  <div class="section-title">Exercices les plus ratés</div>
+  ${missIds.length?`<div class="card" style="padding-block:4px">${missIds.map(id=>{const it=ITEMS[id];return `<div class="skill"><div class="m-top"><span>${UNITS[it.ui].t}</span><span>${S.miss[id]} erreur${S.miss[id]>1?'s':''}</span></div><div class="m-q" style="font-size:16px">${esc(plain(it.s))}</div><div class="m-a">${esc(answerText(it))}</div></div>`}).join('')}</div>`:`<div class="card empty">Aucune erreur pour l’instant.</div>`}
+  <div class="section-title">Réglages</div><div class="card">
+   <div class="row"><div><b>Progression</b><p>Elle est enregistrée dans le navigateur de cet appareil, sans inscription. Elle repart de zéro sur un autre appareil ou si les données du navigateur sont effacées.</p></div></div>
+   <div class="row"><div><b>Sons</b><p>Petit son pour une bonne ou une mauvaise réponse</p></div><button class="switch" id="soundSw" role="switch" aria-checked="${S.sound}" aria-label="Sons"></button></div>
+   <div class="row"><div><b>Débloquer toutes les leçons</b><p>Pour travailler directement une étape</p></div><button class="switch" id="unlockSw" role="switch" aria-checked="${S.unlockAll}" aria-label="Débloquer toutes les leçons"></button></div>
+   <div class="row" id="resetRow"><div><b>Tout recommencer</b><p>Efface points, leçons, erreurs et statistiques</p></div><button class="btn ghost small" id="resetBtn">Effacer</button></div>
   </div></div>`;
 }
 function renderApp(){
@@ -720,7 +720,7 @@ document.addEventListener('click',ev=>{
     if(t.id==='startDefi'){const items=[];UNITS.forEach(u=>shuffle(u.items).slice(0,2).forEach(it=>items.push({id:it.id})));startLesson({mode:'defi',items:shuffle(items)});return}
     if(t.id==='soundSw'){S.sound=!S.sound;save();renderApp();return}
     if(t.id==='unlockSw'){S.unlockAll=!S.unlockAll;save();renderApp();return}
-    if(t.id==='resetBtn'){$('#resetRow').innerHTML=`<div><b>确定清除全部进度？</b><p>这一步无法撤销</p></div><div style="display:flex;gap:8px"><button class="btn ghost small" id="resetNo">取消</button><button class="btn danger small" id="resetYes">清除</button></div>`;return}
+    if(t.id==='resetBtn'){$('#resetRow').innerHTML=`<div><b>Tout effacer ?</b><p>C’est définitif</p></div><div style="display:flex;gap:8px"><button class="btn ghost small" id="resetNo">Annuler</button><button class="btn danger small" id="resetYes">Effacer</button></div>`;return}
     if(t.id==='resetNo'){renderApp();return}
     if(t.id==='resetYes'){S=def();S.resetAt=Date.now();save();renderApp();return}
     return;
@@ -836,7 +836,7 @@ renderApp();
   if(typeof orig.closeLesson==='function')window.closeLesson=function(){stop();return orig.closeLesson.apply(this,arguments)};
   if(typeof orig.renderParents==='function')window.renderParents=function(){
     const h=orig.renderParents.apply(this,arguments);
-    const row=`<div class="row"><div><b>自动朗读</b><p>出题时读句子，答完后读解释（Cherry 录音）</p></div><button class="switch" id="autoSay" role="switch" aria-checked="${AUTO}" aria-label="自动朗读"></button></div>`;
+    const row=`<div class="row"><div><b>Lecture automatique</b><p>La phrase est lue à chaque exercice, puis l’explication après la réponse</p></div><button class="switch" id="autoSay" role="switch" aria-checked="${AUTO}" aria-label="Lecture automatique"></button></div>`;
     const at=h.indexOf('<div class="row" id="resetRow">');
     return at<0?h:h.slice(0,at)+row+h.slice(at);
   };
@@ -856,7 +856,7 @@ renderApp();
   if(STATS){const g=document.createElement('script');g.async=true;g.src='https://gc.zgo.at/count.js';
     g.dataset.goatcounter='https://twang84861722.goatcounter.com/count';document.head.appendChild(g)}
   function track(path,title){if(!STATS)return;
-    const go=n=>{if(window.goatcounter&&window.goatcounter.count){try{window.goatcounter.count({path:'grammaire/'+path,title:title||path,event:true})}catch(e){}}else if(n<20)setTimeout(()=>go(n+1),500)};go(0)}
+    const go=n=>{if(window.goatcounter&&window.goatcounter.count){try{window.goatcounter.count({path:'grammaire/fr/'+path,title:title||path,event:true})}catch(e){}}else if(n<20)setTimeout(()=>go(n+1),500)};go(0)}
   const wrap=(name,fn)=>{const o=window[name];if(typeof o==='function')window[name]=function(){const r=o.apply(this,arguments);try{fn()}catch(e){}return r}};
   wrap('finish',()=>track('lesson-done','Leçon terminée'));
   wrap('finishDefi',()=>track('defi-done','Grand défi terminé'));
@@ -864,11 +864,11 @@ renderApp();
   const o=window.renderParents;
   if(typeof o==='function')window.renderParents=function(){
     const h=o.apply(this,arguments);
-    const about=`<div class="section-title">关于 / 反馈</div><div class="card note" style="display:grid;gap:8px">
-      <p style="margin:0">一位家长为孩子做的免费练习，不是官方材料，也不收集任何个人信息。录音由 Qwen 的 Cherry 语音生成。</p>
-      ${STATS?'<p style="margin:0">本站用 GoatCounter 匿名统计访问量和完成的课数，不用 cookie。</p>':''}
-      <p style="margin:0">发现题目或录音有错、或者有建议：<a href="https://github.com/TWANG84861722/grammaire-cm1/issues" target="_blank" rel="noopener" style="color:var(--accent)">在 GitHub 留言</a>，或发邮件到 <span style="user-select:all;color:var(--ink)">${MAIL}</span>。</p>
-      <p style="margin:0"><a href="fr/" style="color:var(--accent);font-weight:700">Espace parents en français →</a></p></div>`;
+    const about=`<div class="section-title">À propos</div><div class="card note" style="display:grid;gap:8px">
+      <p style="margin:0">Exercices gratuits créés par un parent pour son enfant. Ce n’est pas un document officiel, et aucune donnée personnelle n’est collectée. Les voix sont générées avec la voix Cherry de Qwen.</p>
+      ${STATS?'<p style="margin:0">Les visites et les leçons terminées sont comptées de façon anonyme avec GoatCounter, sans cookie.</p>':''}
+      <p style="margin:0">Une erreur dans un exercice ou un enregistrement, une suggestion ? <a href="https://github.com/TWANG84861722/grammaire-cm1/issues" target="_blank" rel="noopener" style="color:var(--accent)">Écrivez sur GitHub</a> ou par e-mail : <span style="user-select:all;color:var(--ink)">${MAIL}</span>.</p>
+      <p style="margin:0"><a href="../" style="color:var(--accent);font-weight:700">家长页中文版 →</a></p></div>`;
     const at=h.lastIndexOf('</div></div>');
     return at<0?h+about:h.slice(0,at+6)+about+h.slice(at+6);   // après la carte Réglages, avant la fin de la page
   };
